@@ -16,4 +16,13 @@ public class GLTFParserTest {
 		assertNotNull(gltf);
 	}
 	
+	@Test
+	public void testParseBinaryDoNotThrowException() throws Exception {
+		final byte[] bytes = ModelResourceLoader.readModel(ModelResourceLoader.SIMPLE_CUBE_BIN);
+		final GlTF gltf = GLTFParser.fromBinary(bytes, 0, bytes.length).parse();
+		
+		assertNotNull(gltf);
+	}
+
+	
 }
