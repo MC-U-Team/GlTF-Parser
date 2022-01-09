@@ -16,9 +16,9 @@ import info.u_team.gltf_parser.generated.gltf.Buffer;
 import info.u_team.gltf_parser.generated.gltf.GlTF;
 
 public class JsonGLTFParser extends GLTFParser {
-
+	
 	private static final Gson GSON = new GsonBuilder().create();
-
+	
 	public JsonGLTFParser(byte[] data) {
 		super(data);
 	}

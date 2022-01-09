@@ -13,18 +13,18 @@ public class BinaryGLTFParser extends GLTFParser {
 	public BinaryGLTFParser(byte[] data) {
 		super(data);
 	}
-
+	
 	public BinaryGLTFParser(byte[] data, int offset, int lenght) {
 		super(data, offset, lenght);
 	}
-
+	
 	private static final int GLTF_MAGIC_HEADER = 0x46546C67;
 	private static final int GLTF_SUPPORTED_VERSION = 2;
 	private static final int GLTF_CHUNK_BINARY = 0x004E4942;
 	private static final int GLTF_CHUNK_JSON = 0x4E4F534A;
 	
 	private byte[] gltfToBinaryData;
-		
+	
 	@Override
 	public GlTF parse() throws IOException, GLTFParseException {
 		buffer.order(ByteOrder.LITTLE_ENDIAN);
@@ -70,8 +70,8 @@ public class BinaryGLTFParser extends GLTFParser {
 	
 	@Override
 	public ByteBuffer getData(BufferView bufferView) {
-		final int bufferIndex = (Integer)bufferView.getBuffer();
-		if(bufferIndex != 0)
+		final int bufferIndex = (Integer) bufferView.getBuffer();
+		if (bufferIndex != 0)
 			throw new UnsupportedOperationException("Index other then 0 not allowed in binary mode!");
 		final ByteBuffer data = ByteBuffer.wrap(gltfToBinaryData);
 		data.position(data.position() + bufferView.getByteOffset());
