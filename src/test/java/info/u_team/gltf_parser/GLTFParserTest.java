@@ -11,7 +11,7 @@ public class GLTFParserTest {
 	@Test
 	public void testParseDoNotThrowException() throws Exception {
 		final byte[] bytes = ModelResourceLoader.readModel(ModelResourceLoader.SIMPLE_CUBE_JSON);
-		final GlTF gltf = GLTFParser.parseJson(bytes);
+		final GlTF gltf = GLTFParser.fromJson(bytes, 0, bytes.length).parse();
 		
 		assertNotNull(gltf);
 	}
