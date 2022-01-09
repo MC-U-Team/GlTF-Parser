@@ -19,6 +19,8 @@ public class JsonGLTFParser extends GLTFParser {
 	
 	private static final Gson GSON = new GsonBuilder().create();
 	
+	private static final String GLTF_SUPPORTED_VERSION = "2.0";
+	
 	public JsonGLTFParser(byte[] data) {
 		super(data);
 	}
@@ -27,34 +29,24 @@ public class JsonGLTFParser extends GLTFParser {
 		super(data, offset, lenght);
 	}
 	
-	private static void validateGLTF(GlTF gltf) throws GLTFParseException {
-		if (!(gltf.getAsset() instanceof LinkedTreeMap)) {
-			throw new GLTFParseException("Could not read asset values");
+	@Override
+	public GlTF parse() throws IOException, GLTFParseException {
+		final GlTF gltf;
+		
+		try (final Reader reader = new InputStreamReader(new ByteArrayInputStream(buffer.array(), buffer.arrayOffset(), buffer.limit()), StandardCharsets.UTF_8)) {
+			gltf = GSON.fromJson(reader, GlTF.class);
+		} catch (JsonParseException ex) {
+			throw new GLTFParseException("Could not parse gltf json", ex);
 		}
 		
 		@SuppressWarnings("unchecked")
 		final LinkedTreeMap<String, String> asset = (LinkedTreeMap<String, String>) gltf.getAsset();
 		
-		if (!"2.0".equals(asset.get("version"))) {
-			throw new GLTFParseException("Only models with 2.0 version are supported.");
-		}
-	}
-	
-	@Override
-	public void close() throws Exception {
-	}
-	
-	@Override
-	public GlTF parse() throws IOException, GLTFParseException {
-		try (final Reader reader = new InputStreamReader(new ByteArrayInputStream(buffer.array(), buffer.arrayOffset(), buffer.limit()), StandardCharsets.UTF_8)) {
-			final GlTF gltf = GSON.fromJson(reader, GlTF.class);
-			validateGLTF(gltf);
-			
-			this.gltf = gltf;
-			return gltf;
-		} catch (JsonParseException ex) {
-			throw new GLTFParseException("Could not parse gltf json", ex);
-		}
+		if (!GLTF_SUPPORTED_VERSION.equals(asset.get("version")))
+			throw new GLTFParseException("Version does not match, only '2.0' is supported");
+		
+		this.gltf = gltf;
+		return gltf;
 	}
 	
 	@Override
@@ -62,4 +54,8 @@ public class JsonGLTFParser extends GLTFParser {
 		throw new UnsupportedOperationException();
 	}
 	
+	@Override
+	public void close() throws Exception {
+		
+	}
 }
