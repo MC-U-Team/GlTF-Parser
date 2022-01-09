@@ -33,7 +33,7 @@ dependencies {
 jsonSchema2Pojo {
 	source = files("glTF/specification/2.0/schema")
 	targetDirectory = file("${project.buildDir}/generated-sources/glTF")
-	targetPackage = "net.hycrafthd.generated.gltf"
+	targetPackage = "info.u_team.gltf_parser.generated.gltf"
 	includeAdditionalProperties = true
 	includeGeneratedAnnotation = false
 	annotationStyle = "gson"
