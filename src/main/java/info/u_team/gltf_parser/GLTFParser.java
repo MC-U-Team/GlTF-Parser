@@ -42,27 +42,27 @@ public class GLTFParser {
 	 * @throws JsonParseException When json could not be parsed
 	 */
 	public static GlTF parseBinary(final byte[] data, final int bLength, final int offset)
-			throws IOException, JsonParseException {
+			throws GLTFParseException, IOException {
 		final ByteBuffer buffer = ByteBuffer.wrap(data, offset, bLength);
 
 		final int magic = buffer.getInt();
 		if (magic != GLTF_MAGIC_HEADER)
-			throw new IOException("Header magic does not match 'gltf' string!");
+			throw new GLTFParseException("Header magic does not match 'gltf' string!");
 
 		final int version = buffer.getInt();
 		if (version != GLTF_SUPPORTED_VERSION)
-			throw new IOException("Version does not match, only '2' is supported!");
+			throw new GLTFParseException("Version does not match, only '2' is supported!");
 
 		final int length = buffer.getInt();
 		if (length != bLength)
-			throw new IOException("Gltf header length does not match the parameter bLength!");
+			throw new GLTFParseException("Gltf header length does not match the parameter bLength!");
 
 		final int chunkLengthJson = buffer.getInt();
 		final int chunkTypeJson = buffer.getInt();
 		final byte[] chunkDataJson = new byte[chunkLengthJson];
 		buffer.get(chunkDataJson);
 		if (chunkTypeJson != GLTF_CHUNK_JSON)
-			throw new IOException("First chunk is not a json chunk!");
+			throw new GLTFParseException("First chunk is not a json chunk!");
 		final GlTF gltf = parseJson(chunkDataJson);
 
 		final int chunkLengthBin = buffer.getInt();
@@ -70,11 +70,11 @@ public class GLTFParser {
 		final byte[] chunkDataBin = new byte[chunkLengthBin];
 		buffer.get(chunkDataBin);
 		if (chunkTypeBin != GLTF_CHUNK_BINARY)
-			throw new IOException("Second chunk is not a binary chunk!");
+			throw new GLTFParseException("Second chunk is not a binary chunk!");
 
 		final Buffer binBuffer = gltf.getBuffers().get(0);
 		if (binBuffer.getUri() != null)
-			throw new IOException("Buffer not a internal binary buffer!");
+			throw new GLTFParseException("Buffer not a internal binary buffer!");
 		GLTF_TO_BINARY_DATA.put(binBuffer, chunkDataBin);
 
 		return gltf;
