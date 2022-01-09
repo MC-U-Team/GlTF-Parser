@@ -11,6 +11,7 @@ import java.util.HashMap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParseException;
+import com.google.gson.internal.LinkedTreeMap;
 
 import info.u_team.gltf_parser.generated.gltf.Accessor;
 import info.u_team.gltf_parser.generated.gltf.Buffer;
@@ -109,7 +110,7 @@ public class GLTFParser {
 	 * @throws IOException        When byte array could not be read
 	 * @throws JsonParseException When json could not be parsed
 	 */
-	public static final GlTF parseJson(final byte data[]) throws IOException, JsonParseException {
+	public static final GlTF parseJson(final byte data[]) throws IOException, GLTFParseException {
 		return parseJson(data, 0, data.length);
 	}
 
@@ -124,13 +125,26 @@ public class GLTFParser {
 	 * @throws IOException        When byte array could not be read
 	 * @throws JsonParseException When json could not be parsed
 	 */
-	public static final GlTF parseJson(final byte data[], final int offset, final int lenght)
-			throws IOException, JsonParseException {
-		try (final Reader reader = new InputStreamReader(new ByteArrayInputStream(data, offset, lenght),
-				StandardCharsets.UTF_8)) {
+	public static final GlTF parseJson(final byte data[], final int offset, final int lenght) throws IOException, GLTFParseException {
+		try (final Reader reader = new InputStreamReader(new ByteArrayInputStream(data, offset, lenght), StandardCharsets.UTF_8)) {
 			final GlTF gltf = GSON.fromJson(reader, GlTF.class);
-
+			validateGLTF(gltf);
 			return gltf;
+		} catch (JsonParseException ex) {
+			throw new GLTFParseException("Could not parse gltf json", ex);
+		}
+	}
+	
+	private static void validateGLTF(GlTF gltf) throws GLTFParseException {
+		if (!(gltf.getAsset() instanceof LinkedTreeMap)) {
+			throw new GLTFParseException("Could not read asset values");
+		}
+		
+		@SuppressWarnings("unchecked")
+		final LinkedTreeMap<String, String> asset = (LinkedTreeMap<String, String>) gltf.getAsset();
+		
+		if (!"2.0".equals(asset.get("version"))) {
+			throw new GLTFParseException("Only models with 2.0 version are supported.");
 		}
 	}
 
