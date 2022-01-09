@@ -16,13 +16,15 @@ import info.u_team.gltf_parser.generated.gltf.Buffer;
 import info.u_team.gltf_parser.generated.gltf.GlTF;
 
 public class JsonGLTFParser extends GLTFParser {
-	
+
 	private static final Gson GSON = new GsonBuilder().create();
-	
-	private final ByteBuffer buffer;
+
+	public JsonGLTFParser(byte[] data) {
+		super(data);
+	}
 	
 	public JsonGLTFParser(byte[] data, int offset, int lenght) {
-		buffer = ByteBuffer.wrap(data, offset, lenght);
+		super(data, offset, lenght);
 	}
 	
 	private static void validateGLTF(GlTF gltf) throws GLTFParseException {
@@ -44,7 +46,7 @@ public class JsonGLTFParser extends GLTFParser {
 	
 	@Override
 	public GlTF parse() throws IOException, GLTFParseException {
-		try (final Reader reader = new InputStreamReader(new ByteArrayInputStream(buffer.array()), StandardCharsets.UTF_8)) {
+		try (final Reader reader = new InputStreamReader(new ByteArrayInputStream(buffer.array(), buffer.arrayOffset(), buffer.limit()), StandardCharsets.UTF_8)) {
 			final GlTF gltf = GSON.fromJson(reader, GlTF.class);
 			validateGLTF(gltf);
 			

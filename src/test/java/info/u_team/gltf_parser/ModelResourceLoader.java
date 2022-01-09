@@ -8,7 +8,8 @@ import java.net.URL;
 public class ModelResourceLoader {
 	
 	public static URL SIMPLE_CUBE_JSON = getModel("simple_cube_json.gltf");
-	
+	public static URL SIMPLE_CUBE_BIN = getModel("simple_cube_json.glb");
+
 	private static URL getModel(String modelName) {
 		return ModelResourceLoader.class.getClassLoader().getResource("./test_models/" + modelName);
 	}
