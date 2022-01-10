@@ -12,7 +12,7 @@ public abstract class GLTFParserTest {
 	protected abstract GLTFParser simpleCubeParser();
 	
 	@Test
-	public void testParseDoNotThrowException() throws Exception {
+	public void testParseSimpleCubeDoNotThrowException() {
 		final GLTFParser parser = simpleCubeParser();
 		final GlTF gltf = assertDoesNotThrow(parser::parse);
 		
