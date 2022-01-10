@@ -30,7 +30,7 @@ public abstract class GLTFParser implements AutoCloseable {
 	public abstract ByteBuffer getData(Buffer buffer);
 	
 	public ByteBuffer getData(BufferView bufferView) {
-		final int bufferIndex = (Integer) bufferView.getBuffer();
+		final int bufferIndex = ((Double) bufferView.getBuffer()).intValue();
 		final Buffer buffer = gltf.getBuffers().get(bufferIndex);
 		final ByteBuffer data = getData(buffer);
 		data.position(data.position() + bufferView.getByteOffset());
@@ -39,7 +39,7 @@ public abstract class GLTFParser implements AutoCloseable {
 	}
 	
 	public ByteBuffer getData(Accessor accessor) {
-		final int bufferIndex = (Integer) accessor.getBufferView();
+		final int bufferIndex = ((Double) accessor.getBufferView()).intValue();
 		final BufferView buffer = gltf.getBufferViews().get(bufferIndex);
 		final ByteBuffer byteBuffer = getData(buffer);
 		byteBuffer.position(byteBuffer.position() + accessor.getByteOffset());
@@ -47,7 +47,7 @@ public abstract class GLTFParser implements AutoCloseable {
 	}
 	
 	public ByteBuffer getData(Image image) {
-		final int index = (int) image.getBufferView();
+		final int index = ((Double) image.getBufferView()).intValue();
 		return getData(gltf.getBufferViews().get(index));
 	}
 	

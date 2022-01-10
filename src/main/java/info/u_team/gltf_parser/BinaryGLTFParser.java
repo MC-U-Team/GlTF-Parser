@@ -70,7 +70,7 @@ public class BinaryGLTFParser extends GLTFParser {
 	
 	@Override
 	public ByteBuffer getData(BufferView bufferView) {
-		final int bufferIndex = (Integer) bufferView.getBuffer();
+		final int bufferIndex = ((Double) bufferView.getBuffer()).intValue();
 		if (bufferIndex != 0)
 			throw new UnsupportedOperationException("Index other then 0 not allowed in binary mode!");
 		final ByteBuffer data = ByteBuffer.wrap(gltfToBinaryData);
