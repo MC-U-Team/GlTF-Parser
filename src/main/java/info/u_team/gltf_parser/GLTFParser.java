@@ -30,9 +30,8 @@ public abstract class GLTFParser implements AutoCloseable {
 	}
 	
 	/**
-	 * Creates a new parser instance for the input data
-	 * The input data is offset by the offset input and
-	 * a maximum of length bytes are being used for the input
+	 * Creates a new parser instance for the input data The input data is offset by the offset input and a maximum of length
+	 * bytes are being used for the input
 	 * 
 	 * @param data data the data to parse
 	 * @param offset the offset by which data is offset
