@@ -8,12 +8,24 @@ import info.u_team.gltf_parser.generated.gltf.Buffer;
 import info.u_team.gltf_parser.generated.gltf.BufferView;
 import info.u_team.gltf_parser.generated.gltf.GlTF;
 
+/**
+ * Implementation of {@link GLTFParser} for binary (.glb) files
+ * 
+ * @author MrTroble
+ * @version 1.0.0
+ */
 public class BinaryGLTFParser extends GLTFParser {
 	
+	/**
+	 * {@link GLTFParser#GLTFParser(byte[])}
+	 */
 	public BinaryGLTFParser(byte[] data) {
 		super(data);
 	}
 	
+	/**
+	 * {@link GLTFParser#GLTFParser(byte[], int, int)}
+	 */
 	public BinaryGLTFParser(byte[] data, int offset, int lenght) {
 		super(data, offset, lenght);
 	}
@@ -25,6 +37,9 @@ public class BinaryGLTFParser extends GLTFParser {
 	
 	private byte[] gltfToBinaryData;
 	
+	/**
+	 * Parses the given data as binary glb files See: {@link GLTFParser#parse()}
+	 */
 	@Override
 	public GlTF parse() throws IOException, GLTFParseException {
 		buffer.order(ByteOrder.LITTLE_ENDIAN);
@@ -63,24 +78,30 @@ public class BinaryGLTFParser extends GLTFParser {
 		return gltf;
 	}
 	
+	/**
+	 * {@link GLTFParser#getData(Buffer)}
+	 */
 	@Override
 	public ByteBuffer getData(Buffer buffer) {
 		return ByteBuffer.wrap(gltfToBinaryData);
 	}
 	
+	/**
+	 * {@link GLTFParser#getData(BufferView)}
+	 */
 	@Override
 	public ByteBuffer getData(BufferView bufferView) {
-		final int bufferIndex = ((Double) bufferView.getBuffer()).intValue();
+		final int bufferIndex = ((Number) bufferView.getBuffer()).intValue();
 		if (bufferIndex != 0)
 			throw new UnsupportedOperationException("Index other then 0 not allowed in binary mode!");
 		final ByteBuffer data = ByteBuffer.wrap(gltfToBinaryData);
 		data.position(data.position() + bufferView.getByteOffset());
-		data.limit(bufferView.getByteLength());
+		data.limit(data.position() + bufferView.getByteLength());
 		return data;
 	}
 	
 	@Override
 	public void close() throws Exception {
-		
+		gltfToBinaryData = null;
 	}
 }
