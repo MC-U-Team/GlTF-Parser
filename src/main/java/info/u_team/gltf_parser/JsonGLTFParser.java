@@ -5,7 +5,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -14,6 +16,7 @@ import com.google.gson.internal.LinkedTreeMap;
 
 import info.u_team.gltf_parser.generated.gltf.Buffer;
 import info.u_team.gltf_parser.generated.gltf.GlTF;
+import info.u_team.gltf_parser.generated.gltf.Image;
 
 public class JsonGLTFParser extends GLTFParser {
 	
@@ -52,6 +55,17 @@ public class JsonGLTFParser extends GLTFParser {
 	@Override
 	public ByteBuffer getData(Buffer buffer) {
 		throw new UnsupportedOperationException();
+	}
+	
+	@Override
+	public ByteBuffer getData(Image image) {
+		System.out.println(image.getUri().substring("image/png;base64,".length()));
+		//return ByteBuffer.wrap(Base64.getDecoder().decode(image.getUri().substring("image/png;base64,".length() + 5))).order(ByteOrder.BIG_ENDIAN);
+		
+		final byte[] bytes = Base64.getDecoder().decode(image.getUri().substring("image/png;base64,".length() + 5));
+	
+		return ByteBuffer.wrap(Base64.getMimeEncoder().encode(bytes));
+		
 	}
 	
 	@Override
