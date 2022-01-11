@@ -10,25 +10,60 @@ import info.u_team.gltf_parser.generated.gltf.GlTF;
 import info.u_team.gltf_parser.generated.gltf.Image;
 
 /**
- * Main entry point for pasing gltf files
+ * Main entry point for parsing a GLTF file
+ * 
+ * @author HyCraftHD, MrTroble
+ * @version 1.0.0
  */
 public abstract class GLTFParser implements AutoCloseable {
 	
 	protected GlTF gltf;
 	protected final ByteBuffer buffer;
 	
+	/**
+	 * Creates a new parser instance for the input data
+	 * 
+	 * @param data the data to parse
+	 */
 	public GLTFParser(byte[] data) {
 		this(data, 0, data.length);
 	}
 	
-	public GLTFParser(byte[] data, int offset, int lenght) {
-		buffer = ByteBuffer.wrap(data, offset, lenght);
+	/**
+	 * Creates a new parser instance for the input data The input data is offset by the offset input and a maximum of length
+	 * bytes are being used for the input
+	 * 
+	 * @param data data the data to parse
+	 * @param offset the offset by which data is offset
+	 * @param length the maximum length to take form the input
+	 */
+	public GLTFParser(byte[] data, int offset, int length) {
+		buffer = ByteBuffer.wrap(data, offset, length);
 	}
 	
+	/**
+	 * Parses the input data as gltf resource
+	 * 
+	 * @return {@link GlTF} the gltf structure
+	 * @throws IOException
+	 * @throws GLTFParseException
+	 */
 	public abstract GlTF parse() throws IOException, GLTFParseException;
 	
+	/**
+	 * Returns the binary data of a given {@link Buffer} object
+	 * 
+	 * @param buffer the {@link Buffer} from which the data should be returned
+	 * @return the {@link ByteBuffer} wrapping the data
+	 */
 	public abstract ByteBuffer getData(Buffer buffer);
 	
+	/**
+	 * Returns the binary data of a given {@link BufferView} object
+	 * 
+	 * @param bufferView the {@link BufferView} from which the data should be returned
+	 * @return the {@link ByteBuffer} wrapping the data
+	 */
 	public ByteBuffer getData(BufferView bufferView) {
 		final int bufferIndex = (Integer) bufferView.getBuffer();
 		final Buffer buffer = gltf.getBuffers().get(bufferIndex);
@@ -38,6 +73,12 @@ public abstract class GLTFParser implements AutoCloseable {
 		return data;
 	}
 	
+	/**
+	 * Returns the binary data of a given {@link Accessor} object
+	 * 
+	 * @param accessor the {@link Accessor} from which the data should be returned
+	 * @return the {@link ByteBuffer} wrapping the data
+	 */
 	public ByteBuffer getData(Accessor accessor) {
 		final int bufferIndex = (Integer) accessor.getBufferView();
 		final BufferView buffer = gltf.getBufferViews().get(bufferIndex);
@@ -46,6 +87,12 @@ public abstract class GLTFParser implements AutoCloseable {
 		return byteBuffer;
 	}
 	
+	/**
+	 * Returns the binary data of a given {@link Image} object
+	 * 
+	 * @param image the {@link Image} from which the data should be returned
+	 * @return the {@link ByteBuffer} wrapping the data
+	 */
 	public ByteBuffer getData(Image image) {
 		final int index = (int) image.getBufferView();
 		return getData(gltf.getBufferViews().get(index));
