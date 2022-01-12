@@ -1,4 +1,7 @@
-package info.u_team.gltf_parser;
+package info.u_team.gltf_parser.tests;
+
+import info.u_team.gltf_parser.GLTFParser;
+import info.u_team.gltf_parser.TestModelResourceLoader;
 
 public class JsonGLTFParserTest extends GLTFParserTest {
 	
