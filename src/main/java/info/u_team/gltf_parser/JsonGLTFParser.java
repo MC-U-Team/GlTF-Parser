@@ -7,11 +7,12 @@ import java.io.Reader;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParseException;
-import com.google.gson.internal.LinkedTreeMap;
 
 import info.u_team.gltf_parser.generated.gltf.Buffer;
 import info.u_team.gltf_parser.generated.gltf.GlTF;
@@ -22,7 +23,11 @@ public class JsonGLTFParser extends GLTFParser {
 	private static final Gson GSON = new GsonBuilder().create();
 	
 	private static final String GLTF_SUPPORTED_VERSION = "2.0";
+	private static final String BUFFER_BASE64_START = "data:application/octet-stream;base64,";
 	private static final String IMAGE_BASE64_START = "data:image/png;base64,";
+	
+	private final Map<Buffer, ByteBuffer> buffers = new HashMap<>();
+	private final Map<Image, ByteBuffer> images = new HashMap<>();
 	
 	public JsonGLTFParser(byte[] data) {
 		super(data);
@@ -42,11 +47,27 @@ public class JsonGLTFParser extends GLTFParser {
 			throw new GLTFParseException("Could not parse gltf json", ex);
 		}
 		
-		@SuppressWarnings("unchecked")
-		final LinkedTreeMap<String, String> asset = (LinkedTreeMap<String, String>) gltf.getAsset();
+		if (!(gltf.getAsset() instanceof Map))
+			throw new GLTFParseException("Could not read required asset data");
 		
+		@SuppressWarnings("unchecked")
+		final Map<String, String> asset = (Map<String, String>) gltf.getAsset();
 		if (!GLTF_SUPPORTED_VERSION.equals(asset.get("version")))
 			throw new GLTFParseException("Version does not match, only '2.0' is supported");
+		
+		for (Buffer buffer : gltf.getBuffers()) {
+			final String uri = buffer.getUri();
+			if (uri != null) {
+				buffers.put(buffer, decodeBase64(BUFFER_BASE64_START, uri));
+			}
+		}
+		
+		for (Image image : gltf.getImages()) {
+			final String uri = image.getUri();
+			if (uri != null) {
+				images.put(image, decodeBase64(IMAGE_BASE64_START, uri));
+			}
+		}
 		
 		this.gltf = gltf;
 		return gltf;
@@ -54,25 +75,24 @@ public class JsonGLTFParser extends GLTFParser {
 	
 	@Override
 	public ByteBuffer getData(Buffer buffer) {
-		throw new UnsupportedOperationException();
+		return buffers.get(buffer);
 	}
 	
 	@Override
 	public ByteBuffer getData(Image image) {
-		final String uri = image.getUri();
-		if (uri != null && uri.startsWith(IMAGE_BASE64_START)) {
-			return decodeBase64(uri.substring(IMAGE_BASE64_START.length()));
-		} else {
-			return null; // TODO
-		}
-	}
-	
-	private ByteBuffer decodeBase64(String base64) {
-		return ByteBuffer.wrap(Base64.getDecoder().decode(base64));
+		return images.get(image);
 	}
 	
 	@Override
 	public void close() throws Exception {
 		
+	}
+	
+	private ByteBuffer decodeBase64(String uriStart, String uri) throws GLTFParseException {
+		if (uri.startsWith(uriStart)) {
+			return ByteBuffer.wrap(Base64.getDecoder().decode(uri.substring(uriStart.length())));
+		} else {
+			throw new GLTFParseException("Expected uri to start with " + uriStart + " but it starts with " + uri);
+		}
 	}
 }
