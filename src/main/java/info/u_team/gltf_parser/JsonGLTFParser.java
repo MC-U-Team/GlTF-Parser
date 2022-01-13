@@ -18,6 +18,12 @@ import info.u_team.gltf_parser.generated.gltf.Buffer;
 import info.u_team.gltf_parser.generated.gltf.GlTF;
 import info.u_team.gltf_parser.generated.gltf.Image;
 
+/**
+ * Implementation of {@link GLTFParser} for json (.gltf) files
+ * 
+ * @author HyCraftHD
+ * @version 1.0.0
+ */
 public class JsonGLTFParser extends GLTFParser {
 	
 	private static final Gson GSON = new GsonBuilder().create();
@@ -29,14 +35,23 @@ public class JsonGLTFParser extends GLTFParser {
 	private final Map<Buffer, ByteBuffer> buffers = new HashMap<>();
 	private final Map<Image, ByteBuffer> images = new HashMap<>();
 	
+	/**
+	 * {@link GLTFParser#GLTFParser(byte[])}
+	 */
 	public JsonGLTFParser(byte[] data) {
 		super(data);
 	}
 	
+	/**
+	 * {@link GLTFParser#GLTFParser(byte[], int, int)}
+	 */
 	public JsonGLTFParser(byte[] data, int offset, int lenght) {
 		super(data, offset, lenght);
 	}
 	
+	/**
+	 * Parses the given data as json gltf files See: {@link GLTFParser#parse()}
+	 */
 	@Override
 	public GlTF parse() throws IOException, GLTFParseException {
 		final GlTF gltf;
@@ -73,11 +88,17 @@ public class JsonGLTFParser extends GLTFParser {
 		return gltf;
 	}
 	
+	/**
+	 * {@link GLTFParser#getData(Buffer)}
+	 */
 	@Override
 	public ByteBuffer getData(Buffer buffer) {
 		return buffers.get(buffer);
 	}
 	
+	/**
+	 * {@link GLTFParser#getData(Image)}
+	 */
 	@Override
 	public ByteBuffer getData(Image image) {
 		return images.get(image);
