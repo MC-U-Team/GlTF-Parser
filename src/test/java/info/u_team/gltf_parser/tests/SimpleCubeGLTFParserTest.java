@@ -13,7 +13,6 @@ public abstract class SimpleCubeGLTFParserTest extends GLTFParserTest {
 		protected GLTFParser parser() {
 			return GLTFParser.fromBinary(simpleCube, 0, simpleCube.length);
 		}
-		
 	}
 	
 	public static final class Json extends SimpleCubeGLTFParserTest {
@@ -24,7 +23,5 @@ public abstract class SimpleCubeGLTFParserTest extends GLTFParserTest {
 		protected GLTFParser parser() {
 			return GLTFParser.fromJson(simpleCube, 0, simpleCube.length);
 		}
-		
 	}
-	
 }
