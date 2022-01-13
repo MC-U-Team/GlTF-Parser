@@ -3,9 +3,9 @@ package info.u_team.gltf_parser.tests;
 import info.u_team.gltf_parser.GlTFParser;
 import info.u_team.gltf_parser.TestModelResourceLoader;
 
-public abstract class SimpleCubeGLTFParserTest extends GLTFParserTest {
+public abstract class SimpleCubeGlTFParserTest extends GlTFParserTest {
 	
-	public static final class Binary extends SimpleCubeGLTFParserTest {
+	public static final class Binary extends SimpleCubeGlTFParserTest {
 		
 		private final byte[] simpleCube = TestModelResourceLoader.readModel(TestModelResourceLoader.SIMPLE_CUBE_BIN);
 		
@@ -15,7 +15,7 @@ public abstract class SimpleCubeGLTFParserTest extends GLTFParserTest {
 		}
 	}
 	
-	public static final class Json extends SimpleCubeGLTFParserTest {
+	public static final class Json extends SimpleCubeGlTFParserTest {
 		
 		private final byte[] simpleCube = TestModelResourceLoader.readModel(TestModelResourceLoader.SIMPLE_CUBE_JSON);
 		

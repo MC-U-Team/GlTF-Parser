@@ -15,7 +15,7 @@ import info.u_team.gltf_parser.generated.gltf.BufferView;
 import info.u_team.gltf_parser.generated.gltf.GlTF;
 import info.u_team.gltf_parser.generated.gltf.Image;
 
-public abstract class GLTFParserTest {
+public abstract class GlTFParserTest {
 	
 	protected abstract GlTFParser parser();
 	
