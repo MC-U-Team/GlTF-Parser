@@ -17,22 +17,27 @@ import info.u_team.gltf_parser.generated.gltf.Image;
  */
 public class BinaryGLTFParser extends GLTFParser {
 	
-	/**
-	 * {@link GLTFParser#GLTFParser(byte[], int, int)}
-	 */
-	protected BinaryGLTFParser(byte[] data, int offset, int lenght) {
-		super(data, offset, lenght);
-	}
-	
 	private static final int GLTF_MAGIC_HEADER = 0x46546C67;
 	private static final int GLTF_SUPPORTED_VERSION = 2;
 	private static final int GLTF_CHUNK_BINARY = 0x004E4942;
 	private static final int GLTF_CHUNK_JSON = 0x4E4F534A;
 	
-	private byte[] gltfToBinaryData;
+	private byte[] binaryData;
 	
 	/**
-	 * Parses the given data as binary glb files See: {@link GLTFParser#parse()}
+	 * Creates a new binary parser for gltf
+	 * 
+	 * @param data data the data to parse
+	 * @param offset the offset by which data is offset
+	 * @param length the maximum length to take form the input
+	 * @see GLTFParser#GLTFParser(byte[], int, int)
+	 */
+	protected BinaryGLTFParser(byte[] data, int offset, int lenght) {
+		super(data, offset, lenght);
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 */
 	@Override
 	public GlTF parse() throws IOException, GLTFParseException {
@@ -59,8 +64,8 @@ public class BinaryGLTFParser extends GLTFParser {
 		
 		final int chunkLengthBin = data.getInt();
 		final int chunkTypeBin = data.getInt();
-		gltfToBinaryData = new byte[chunkLengthBin];
-		data.get(gltfToBinaryData);
+		binaryData = new byte[chunkLengthBin];
+		data.get(binaryData);
 		if (chunkTypeBin != GLTF_CHUNK_BINARY)
 			throw new GLTFParseException("Second chunk is not a binary chunk!");
 		
@@ -73,29 +78,29 @@ public class BinaryGLTFParser extends GLTFParser {
 	}
 	
 	/**
-	 * {@link GLTFParser#getData(Buffer)}
+	 * {@inheritDoc}
 	 */
 	@Override
 	public ByteBuffer getData(Buffer buffer) {
-		return ByteBuffer.wrap(gltfToBinaryData);
+		return ByteBuffer.wrap(binaryData);
 	}
 	
 	/**
-	 * {@link GLTFParser#getData(BufferView)}
+	 * {@inheritDoc}
 	 */
 	@Override
 	public ByteBuffer getData(BufferView bufferView) {
 		final int bufferIndex = ((Number) bufferView.getBuffer()).intValue();
 		if (bufferIndex != 0)
 			throw new UnsupportedOperationException("Index other then 0 not allowed in binary mode!");
-		final ByteBuffer data = ByteBuffer.wrap(gltfToBinaryData);
+		final ByteBuffer data = ByteBuffer.wrap(binaryData);
 		data.position(data.position() + bufferView.getByteOffset());
 		data.limit(data.position() + bufferView.getByteLength());
 		return data;
 	}
 	
 	/**
-	 * {@link GLTFParser#getData(Image)}
+	 * {@inheritDoc}
 	 */
 	public ByteBuffer getData(Image image) {
 		final int index = ((Number) image.getBufferView()).intValue();
@@ -104,6 +109,6 @@ public class BinaryGLTFParser extends GLTFParser {
 	
 	@Override
 	public void close() throws Exception {
-		gltfToBinaryData = null;
+		binaryData = null;
 	}
 }

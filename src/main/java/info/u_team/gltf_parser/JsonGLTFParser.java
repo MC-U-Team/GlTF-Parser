@@ -36,14 +36,19 @@ public class JsonGLTFParser extends GLTFParser {
 	private final Map<Image, ByteBuffer> images = new HashMap<>();
 	
 	/**
-	 * {@link GLTFParser#GLTFParser(byte[], int, int)}
+	 * Creates a new json parser for gltf
+	 * 
+	 * @param data data the data to parse
+	 * @param offset the offset by which data is offset
+	 * @param length the maximum length to take form the input
+	 * @see GLTFParser#GLTFParser(byte[], int, int)
 	 */
 	protected JsonGLTFParser(byte[] data, int offset, int lenght) {
 		super(data, offset, lenght);
 	}
 	
 	/**
-	 * Parses the given data as json gltf files See: {@link GLTFParser#parse()}
+	 * {@inheritDoc}
 	 */
 	@Override
 	public GlTF parse() throws IOException, GLTFParseException {
@@ -82,7 +87,7 @@ public class JsonGLTFParser extends GLTFParser {
 	}
 	
 	/**
-	 * {@link GLTFParser#getData(Buffer)}
+	 * {@inheritDoc}
 	 */
 	@Override
 	public ByteBuffer getData(Buffer buffer) {
@@ -90,7 +95,7 @@ public class JsonGLTFParser extends GLTFParser {
 	}
 	
 	/**
-	 * {@link GLTFParser#getData(Image)}
+	 * {@inheritDoc}
 	 */
 	@Override
 	public ByteBuffer getData(Image image) {
@@ -99,7 +104,6 @@ public class JsonGLTFParser extends GLTFParser {
 	
 	@Override
 	public void close() throws Exception {
-		
 	}
 	
 	private ByteBuffer decodeBase64(String uriStart, String uri) throws GLTFParseException {
