@@ -9,7 +9,7 @@ import java.nio.ByteBuffer;
 
 import org.junit.jupiter.api.Test;
 
-import info.u_team.gltf_parser.GLTFParser;
+import info.u_team.gltf_parser.GlTFParser;
 import info.u_team.gltf_parser.generated.gltf.Accessor;
 import info.u_team.gltf_parser.generated.gltf.BufferView;
 import info.u_team.gltf_parser.generated.gltf.GlTF;
@@ -17,11 +17,11 @@ import info.u_team.gltf_parser.generated.gltf.Image;
 
 public abstract class GLTFParserTest {
 	
-	protected abstract GLTFParser parser();
+	protected abstract GlTFParser parser();
 	
 	@Test
 	public void testParseDoNotThrowException() {
-		final GLTFParser parser = parser();
+		final GlTFParser parser = parser();
 		final GlTF gltf = assertDoesNotThrow(parser::parse);
 		
 		assertNotNull(gltf);
@@ -29,7 +29,7 @@ public abstract class GLTFParserTest {
 	
 	@Test
 	public void testGetBuffer() {
-		final GLTFParser parser = parser();
+		final GlTFParser parser = parser();
 		final GlTF gltf = assertDoesNotThrow(parser::parse);
 		
 		final ByteBuffer buffer = parser.getData(gltf.getBuffers().get(0));
@@ -40,7 +40,7 @@ public abstract class GLTFParserTest {
 	
 	@Test
 	public void testGetBufferViews() {
-		final GLTFParser parser = parser();
+		final GlTFParser parser = parser();
 		final GlTF gltf = assertDoesNotThrow(parser::parse);
 		
 		for (final BufferView bufferView : gltf.getBufferViews()) {
@@ -54,7 +54,7 @@ public abstract class GLTFParserTest {
 	
 	@Test
 	public void testGetAccessors() {
-		final GLTFParser parser = parser();
+		final GlTFParser parser = parser();
 		final GlTF gltf = assertDoesNotThrow(parser::parse);
 		
 		for (final Accessor accessor : gltf.getAccessors()) {
@@ -69,7 +69,7 @@ public abstract class GLTFParserTest {
 	
 	@Test
 	public void testGetImages() {
-		final GLTFParser parser = parser();
+		final GlTFParser parser = parser();
 		final GlTF gltf = assertDoesNotThrow(parser::parse);
 		
 		for (final Image image : gltf.getImages()) {

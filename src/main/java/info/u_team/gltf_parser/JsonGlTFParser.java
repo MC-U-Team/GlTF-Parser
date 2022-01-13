@@ -19,12 +19,12 @@ import info.u_team.gltf_parser.generated.gltf.GlTF;
 import info.u_team.gltf_parser.generated.gltf.Image;
 
 /**
- * Implementation of {@link GLTFParser} for json (.gltf) files
+ * Implementation of {@link GlTFParser} for json (.gltf) files
  * 
  * @author HyCraftHD
  * @version 1.0.0
  */
-public class JsonGLTFParser extends GLTFParser {
+public class JsonGlTFParser extends GlTFParser {
 	
 	private static final Gson GSON = new GsonBuilder().create();
 	
@@ -41,9 +41,9 @@ public class JsonGLTFParser extends GLTFParser {
 	 * @param data data the data to parse
 	 * @param offset the offset by which data is offset
 	 * @param length the maximum length to take form the input
-	 * @see GLTFParser#GLTFParser(byte[], int, int)
+	 * @see GlTFParser#GLTFParser(byte[], int, int)
 	 */
-	protected JsonGLTFParser(byte[] data, int offset, int lenght) {
+	protected JsonGlTFParser(byte[] data, int offset, int lenght) {
 		super(data, offset, lenght);
 	}
 	
@@ -51,22 +51,22 @@ public class JsonGLTFParser extends GLTFParser {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public GlTF parse() throws IOException, GLTFParseException {
+	public GlTF parse() throws IOException, GlTFParseException {
 		final GlTF gltf;
 		
 		try (final Reader reader = new InputStreamReader(new ByteArrayInputStream(data.array(), data.arrayOffset(), data.limit()), StandardCharsets.UTF_8)) {
 			gltf = GSON.fromJson(reader, GlTF.class);
 		} catch (JsonParseException ex) {
-			throw new GLTFParseException("Could not parse gltf json", ex);
+			throw new GlTFParseException("Could not parse gltf json", ex);
 		}
 		
 		if (!(gltf.getAsset() instanceof Map))
-			throw new GLTFParseException("Could not read required asset data");
+			throw new GlTFParseException("Could not read required asset data");
 		
 		@SuppressWarnings("unchecked")
 		final Map<String, String> asset = (Map<String, String>) gltf.getAsset();
 		if (!GLTF_SUPPORTED_VERSION.equals(asset.get("version")))
-			throw new GLTFParseException("Version does not match, only '2.0' is supported");
+			throw new GlTFParseException("Version does not match, only '2.0' is supported");
 		
 		for (Buffer buffer : gltf.getBuffers()) {
 			final String uri = buffer.getUri();
@@ -106,11 +106,11 @@ public class JsonGLTFParser extends GLTFParser {
 	public void close() throws Exception {
 	}
 	
-	private ByteBuffer decodeBase64(String uriStart, String uri) throws GLTFParseException {
+	private ByteBuffer decodeBase64(String uriStart, String uri) throws GlTFParseException {
 		if (uri.startsWith(uriStart)) {
 			return ByteBuffer.wrap(Base64.getDecoder().decode(uri.substring(uriStart.length())));
 		} else {
-			throw new GLTFParseException("Expected uri to start with " + uriStart + " but it starts with " + uri);
+			throw new GlTFParseException("Expected uri to start with " + uriStart + " but it starts with " + uri);
 		}
 	}
 }

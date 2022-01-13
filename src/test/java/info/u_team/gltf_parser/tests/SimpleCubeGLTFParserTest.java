@@ -1,6 +1,6 @@
 package info.u_team.gltf_parser.tests;
 
-import info.u_team.gltf_parser.GLTFParser;
+import info.u_team.gltf_parser.GlTFParser;
 import info.u_team.gltf_parser.TestModelResourceLoader;
 
 public abstract class SimpleCubeGLTFParserTest extends GLTFParserTest {
@@ -10,8 +10,8 @@ public abstract class SimpleCubeGLTFParserTest extends GLTFParserTest {
 		private final byte[] simpleCube = TestModelResourceLoader.readModel(TestModelResourceLoader.SIMPLE_CUBE_BIN);
 		
 		@Override
-		protected GLTFParser parser() {
-			return GLTFParser.fromBinary(simpleCube, 0, simpleCube.length);
+		protected GlTFParser parser() {
+			return GlTFParser.fromBinary(simpleCube, 0, simpleCube.length);
 		}
 	}
 	
@@ -20,8 +20,8 @@ public abstract class SimpleCubeGLTFParserTest extends GLTFParserTest {
 		private final byte[] simpleCube = TestModelResourceLoader.readModel(TestModelResourceLoader.SIMPLE_CUBE_JSON);
 		
 		@Override
-		protected GLTFParser parser() {
-			return GLTFParser.fromJson(simpleCube, 0, simpleCube.length);
+		protected GlTFParser parser() {
+			return GlTFParser.fromJson(simpleCube, 0, simpleCube.length);
 		}
 	}
 }

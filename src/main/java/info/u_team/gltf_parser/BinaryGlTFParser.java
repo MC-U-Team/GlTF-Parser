@@ -10,12 +10,12 @@ import info.u_team.gltf_parser.generated.gltf.GlTF;
 import info.u_team.gltf_parser.generated.gltf.Image;
 
 /**
- * Implementation of {@link GLTFParser} for binary (.glb) files
+ * Implementation of {@link GlTFParser} for binary (.glb) files
  * 
  * @author MrTroble
  * @version 1.0.0
  */
-public class BinaryGLTFParser extends GLTFParser {
+public class BinaryGlTFParser extends GlTFParser {
 	
 	private static final int GLTF_MAGIC_HEADER = 0x46546C67;
 	private static final int GLTF_SUPPORTED_VERSION = 2;
@@ -30,9 +30,9 @@ public class BinaryGLTFParser extends GLTFParser {
 	 * @param data data the data to parse
 	 * @param offset the offset by which data is offset
 	 * @param length the maximum length to take form the input
-	 * @see GLTFParser#GLTFParser(byte[], int, int)
+	 * @see GlTFParser#GLTFParser(byte[], int, int)
 	 */
-	protected BinaryGLTFParser(byte[] data, int offset, int lenght) {
+	protected BinaryGlTFParser(byte[] data, int offset, int lenght) {
 		super(data, offset, lenght);
 	}
 	
@@ -40,26 +40,26 @@ public class BinaryGLTFParser extends GLTFParser {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public GlTF parse() throws IOException, GLTFParseException {
+	public GlTF parse() throws IOException, GlTFParseException {
 		data.order(ByteOrder.LITTLE_ENDIAN);
 		final int magic = data.getInt();
 		if (magic != GLTF_MAGIC_HEADER)
-			throw new GLTFParseException("Header magic does not match 'gltf' string!");
+			throw new GlTFParseException("Header magic does not match 'gltf' string!");
 		
 		final int version = data.getInt();
 		if (version != GLTF_SUPPORTED_VERSION)
-			throw new GLTFParseException("Version does not match, only '2' is supported!");
+			throw new GlTFParseException("Version does not match, only '2' is supported!");
 		
 		final int length = data.getInt();
 		if (length != data.limit())
-			throw new GLTFParseException("Gltf header length does not match the parameter bLength!");
+			throw new GlTFParseException("Gltf header length does not match the parameter bLength!");
 		
 		final int chunkLengthJson = data.getInt();
 		final int chunkTypeJson = data.getInt();
 		final byte[] chunkDataJson = new byte[chunkLengthJson];
 		data.get(chunkDataJson);
 		if (chunkTypeJson != GLTF_CHUNK_JSON)
-			throw new GLTFParseException("First chunk is not a json chunk!");
+			throw new GlTFParseException("First chunk is not a json chunk!");
 		final GlTF gltf = fromJson(chunkDataJson, 0, chunkDataJson.length).parse();
 		
 		final int chunkLengthBin = data.getInt();
@@ -67,11 +67,11 @@ public class BinaryGLTFParser extends GLTFParser {
 		binaryData = new byte[chunkLengthBin];
 		data.get(binaryData);
 		if (chunkTypeBin != GLTF_CHUNK_BINARY)
-			throw new GLTFParseException("Second chunk is not a binary chunk!");
+			throw new GlTFParseException("Second chunk is not a binary chunk!");
 		
 		final Buffer binBuffer = gltf.getBuffers().get(0);
 		if (binBuffer.getUri() != null)
-			throw new GLTFParseException("Buffer not a internal binary buffer!");
+			throw new GlTFParseException("Buffer not a internal binary buffer!");
 		
 		this.gltf = gltf;
 		return gltf;
