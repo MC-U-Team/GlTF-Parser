@@ -108,7 +108,7 @@ public class BinaryGlTFParser extends GlTFParser {
 	}
 	
 	@Override
-	public void close() throws Exception {
+	public void close() throws IOException {
 		binaryData = null;
 	}
 }

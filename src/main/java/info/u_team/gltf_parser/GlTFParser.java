@@ -1,5 +1,6 @@
 package info.u_team.gltf_parser;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
@@ -15,7 +16,7 @@ import info.u_team.gltf_parser.generated.gltf.Image;
  * @author HyCraftHD, MrTroble
  * @version 1.0.0
  */
-public abstract class GlTFParser implements AutoCloseable {
+public abstract class GlTFParser implements Closeable {
 	
 	protected GlTF gltf;
 	protected final ByteBuffer data;

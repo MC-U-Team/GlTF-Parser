@@ -103,7 +103,9 @@ public class JsonGlTFParser extends GlTFParser {
 	}
 	
 	@Override
-	public void close() throws Exception {
+	public void close() throws IOException {
+		buffers.clear();
+		images.clear();
 	}
 	
 	private ByteBuffer decodeBase64(String uriStart, String uri) throws GlTFParseException {
