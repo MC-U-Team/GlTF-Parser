@@ -36,16 +36,9 @@ public class JsonGLTFParser extends GLTFParser {
 	private final Map<Image, ByteBuffer> images = new HashMap<>();
 	
 	/**
-	 * {@link GLTFParser#GLTFParser(byte[])}
-	 */
-	public JsonGLTFParser(byte[] data) {
-		super(data);
-	}
-	
-	/**
 	 * {@link GLTFParser#GLTFParser(byte[], int, int)}
 	 */
-	public JsonGLTFParser(byte[] data, int offset, int lenght) {
+	protected JsonGLTFParser(byte[] data, int offset, int lenght) {
 		super(data, offset, lenght);
 	}
 	
@@ -56,7 +49,7 @@ public class JsonGLTFParser extends GLTFParser {
 	public GlTF parse() throws IOException, GLTFParseException {
 		final GlTF gltf;
 		
-		try (final Reader reader = new InputStreamReader(new ByteArrayInputStream(buffer.array(), buffer.arrayOffset(), buffer.limit()), StandardCharsets.UTF_8)) {
+		try (final Reader reader = new InputStreamReader(new ByteArrayInputStream(data.array(), data.arrayOffset(), data.limit()), StandardCharsets.UTF_8)) {
 			gltf = GSON.fromJson(reader, GlTF.class);
 		} catch (JsonParseException ex) {
 			throw new GLTFParseException("Could not parse gltf json", ex);

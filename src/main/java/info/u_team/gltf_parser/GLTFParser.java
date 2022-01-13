@@ -18,16 +18,7 @@ import info.u_team.gltf_parser.generated.gltf.Image;
 public abstract class GLTFParser implements AutoCloseable {
 	
 	protected GlTF gltf;
-	protected final ByteBuffer buffer;
-	
-	/**
-	 * Creates a new parser instance for the input data
-	 * 
-	 * @param data the data to parse
-	 */
-	public GLTFParser(byte[] data) {
-		this(data, 0, data.length);
-	}
+	protected final ByteBuffer data;
 	
 	/**
 	 * Creates a new parser instance for the input data The input data is offset by the offset input and a maximum of length
@@ -38,7 +29,7 @@ public abstract class GLTFParser implements AutoCloseable {
 	 * @param length the maximum length to take form the input
 	 */
 	public GLTFParser(byte[] data, int offset, int length) {
-		buffer = ByteBuffer.wrap(data, offset, length);
+		this.data = ByteBuffer.wrap(data, offset, length);
 	}
 	
 	/**
@@ -93,9 +84,17 @@ public abstract class GLTFParser implements AutoCloseable {
 	 * @param image the {@link Image} from which the data should be returned
 	 * @return the {@link ByteBuffer} wrapping the data
 	 */
-	public ByteBuffer getData(Image image) {
-		final int index = ((Number) image.getBufferView()).intValue();
-		return getData(gltf.getBufferViews().get(index));
+	public abstract ByteBuffer getData(Image image);
+	
+	/**
+	 * Reads a gltf json file from the bytes and tries to parse it to a {@link GlTF} object.
+	 * 
+	 * @param data The byte array data
+	 * @return A gltf model
+	 * @see GLTFParser#fromJson(byte[], int, int)
+	 */
+	public static JsonGLTFParser fromJson(final byte data[]) {
+		return new JsonGLTFParser(data, 0, data.length);
 	}
 	
 	/**
@@ -108,6 +107,17 @@ public abstract class GLTFParser implements AutoCloseable {
 	 */
 	public static JsonGLTFParser fromJson(final byte data[], final int offset, final int lenght) {
 		return new JsonGLTFParser(data, offset, lenght);
+	}
+	
+	/**
+	 * Reads a glb binary gltf file from the bytes and tries to parse it to a {@link GlTF} object.
+	 * 
+	 * @param data The byte array data
+	 * @return A gltf model
+	 * @see GLTFParser#fromBinary(byte[], int, int)
+	 */
+	public static BinaryGLTFParser fromBinary(final byte data[]) {
+		return new BinaryGLTFParser(data, 0, data.length);
 	}
 	
 	/**
