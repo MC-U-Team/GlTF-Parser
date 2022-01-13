@@ -93,7 +93,7 @@ public class JsonGLTFParser extends GLTFParser {
 	 */
 	@Override
 	public ByteBuffer getData(Buffer buffer) {
-		return buffers.get(buffer);
+		return buffers.get(buffer).duplicate();
 	}
 	
 	/**
@@ -101,7 +101,7 @@ public class JsonGLTFParser extends GLTFParser {
 	 */
 	@Override
 	public ByteBuffer getData(Image image) {
-		return images.get(image);
+		return images.get(image).duplicate();
 	}
 	
 	@Override
