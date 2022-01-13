@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
@@ -23,6 +22,7 @@ public class JsonGLTFParser extends GLTFParser {
 	private static final Gson GSON = new GsonBuilder().create();
 	
 	private static final String GLTF_SUPPORTED_VERSION = "2.0";
+	private static final String IMAGE_BASE64_START = "data:image/png;base64,";
 	
 	public JsonGLTFParser(byte[] data) {
 		super(data);
@@ -59,13 +59,16 @@ public class JsonGLTFParser extends GLTFParser {
 	
 	@Override
 	public ByteBuffer getData(Image image) {
-		System.out.println(image.getUri().substring("image/png;base64,".length()));
-		//return ByteBuffer.wrap(Base64.getDecoder().decode(image.getUri().substring("image/png;base64,".length() + 5))).order(ByteOrder.BIG_ENDIAN);
-		
-		final byte[] bytes = Base64.getDecoder().decode(image.getUri().substring("image/png;base64,".length() + 5));
+		final String uri = image.getUri();
+		if (uri != null && uri.startsWith(IMAGE_BASE64_START)) {
+			return decodeBase64(uri.substring(IMAGE_BASE64_START.length()));
+		} else {
+			return null; // TODO
+		}
+	}
 	
-		return ByteBuffer.wrap(Base64.getMimeEncoder().encode(bytes));
-		
+	private ByteBuffer decodeBase64(String base64) {
+		return ByteBuffer.wrap(Base64.getDecoder().decode(base64));
 	}
 	
 	@Override
