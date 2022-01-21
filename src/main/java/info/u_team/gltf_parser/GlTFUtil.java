@@ -13,11 +13,15 @@ public class GlTFUtil {
 	public static int GLTF_COMPONENT_TYPE_FLOAT = 5126;
 	
 	public static boolean equalsOf(int indexIn, Object indexObj) {
+		if(indexObj == null)
+			return false;
 		final int index = ((Number) indexObj).intValue();
 		return index == indexIn;
 	}
 	
 	public static <T> Optional<T> of(List<T> list, Object indexObj) {
+		if(indexObj == null)
+			return Optional.empty();
 		final int index = ((Number) indexObj).intValue();
 		if (index < 0)
 			return Optional.empty();
