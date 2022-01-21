@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.HashMap;
@@ -91,7 +92,7 @@ public class JsonGlTFParser extends GlTFParser {
 	 */
 	@Override
 	public ByteBuffer getData(Buffer buffer) {
-		return buffers.get(buffer).duplicate();
+		return buffers.get(buffer).duplicate().order(ByteOrder.LITTLE_ENDIAN);
 	}
 	
 	/**
@@ -99,7 +100,7 @@ public class JsonGlTFParser extends GlTFParser {
 	 */
 	@Override
 	public ByteBuffer getData(Image image) {
-		return images.get(image).duplicate();
+		return images.get(image).duplicate().order(ByteOrder.LITTLE_ENDIAN);
 	}
 	
 	@Override
