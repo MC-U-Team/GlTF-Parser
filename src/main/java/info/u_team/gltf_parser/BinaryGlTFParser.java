@@ -82,7 +82,7 @@ public class BinaryGlTFParser extends GlTFParser {
 	 */
 	@Override
 	public ByteBuffer getData(Buffer buffer) {
-		return ByteBuffer.wrap(binaryData);
+		return ByteBuffer.wrap(binaryData).order(ByteOrder.LITTLE_ENDIAN);
 	}
 	
 	/**
@@ -93,7 +93,7 @@ public class BinaryGlTFParser extends GlTFParser {
 		final int bufferIndex = ((Number) bufferView.getBuffer()).intValue();
 		if (bufferIndex != 0)
 			throw new UnsupportedOperationException("Index other then 0 not allowed in binary mode!");
-		final ByteBuffer data = ByteBuffer.wrap(binaryData);
+		final ByteBuffer data = ByteBuffer.wrap(binaryData).order(ByteOrder.LITTLE_ENDIAN);
 		data.position(data.position() + bufferView.getByteOffset());
 		data.limit(data.position() + bufferView.getByteLength());
 		return data;
